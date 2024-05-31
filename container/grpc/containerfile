@@ -1,4 +1,4 @@
-FROM docker.io/rust:1.70.0 as builder
+FROM docker.io/rust:1.78.0 as builder
 
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
@@ -8,13 +8,13 @@ RUN apt-get update && \
     apt-get upgrade -y
 
 WORKDIR /app
-RUN rustup component add rustfmt --toolchain 1.70.0-x86_64-unknown-linux-gnu
+RUN rustup component add rustfmt --toolchain 1.78.0-x86_64-unknown-linux-gnu
 
 ADD . .
 RUN PKG_MANAGER=apt-get make all target=grpc
 
 ######## Start a new stage from scratch #######
-FROM docker.io/debian:stable-slim
+FROM docker.io/debian:bullseye-slim
 ARG APP=/usr/src/app
 
 RUN apt-get update \
@@ -28,11 +28,11 @@ RUN groupadd $APP_USER \
     && useradd -g $APP_USER $APP_USER \
     && mkdir -p ${APP}
 
-COPY --from=builder /app/target/release/grpc ${APP}/rauth-grpc
+COPY --from=builder /app/target/release/grpc ${APP}/tykhe-grpc
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 
 USER $APP_USER
 WORKDIR ${APP}
 
-CMD ["./rauth-grpc"]
+CMD ["./tykhe-grpc"]

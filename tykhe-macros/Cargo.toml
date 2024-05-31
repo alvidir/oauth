@@ -1,0 +1,18 @@
+[package]
+    authors     = ["Hèctor Morales <hector.morales.carnice@gmail.com>"]
+    description = "Proc macros complementary to the tykhe crate."
+    edition     = "2021"
+    license     = "MIT"
+    name        = "tykhe-macros"
+    readme      = "../README.md"
+    repository  = "https://github.com/alvidir/tykhe"
+    version     = "0.1.0"
+
+[dependencies]
+    proc-macro2 = "1.0"
+    quote       = "1.0"
+    syn         = "2.0"
+
+[lib]
+    path       = "src/lib.rs"
+    proc-macro = true

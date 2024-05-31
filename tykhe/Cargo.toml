@@ -1,0 +1,109 @@
+[package]
+    authors     = ["Hèctor Morales <hector.morales.carnice@gmail.com>"]
+    description = "A single sign on (SSO) library."
+    edition     = "2021"
+    license     = "MIT"
+    name        = "tykhe"
+    readme      = "../README.md"
+    repository  = "https://github.com/alvidir/tykhe"
+    version     = "1.0.0"
+
+[dependencies]
+    argon2 = "0.5"
+    async-trait = "0.1"
+    axum = {version = "0.7", optional = true} # rest
+    axum-extra = {version = "0.9", features = ["typed-header"]}
+    base64 = "0.22"
+    chrono = "0.4.26"
+    deadpool-lapin = {version = "0.12", optional = true}
+    dotenv = "0.15"
+    futures = "0.3"
+    jsonwebtoken = "9.3"
+    lapin = {version = "2.2", optional = true}
+    lettre = {version = "0.11", optional = true}
+    libreauth = "0.16"
+    once_cell = "1.18"
+    openssl = "0.10"
+    opentelemetry = {version = "0.23", optional = true}
+    opentelemetry-otlp = {version = "0.16", optional = true}
+    opentelemetry-semantic-conventions = {version = "0.15", optional = true}
+    opentelemetry_api = {version = "0.20", optional = true}
+    opentelemetry_sdk = {version = "0.23", features = [
+        "rt-tokio",
+    ], optional = true}
+    prost = {version = "0.12", optional = true} # protobuf
+    protoc = {version = "2.28", optional = true}
+    rand = "0.8"
+    redis = {version = "0.25", features = ["tokio-comp"], optional = true}
+    regex = "1.8"
+    reool = {version = "0.30", optional = true}
+    serde = "1.0" # data parser
+    serde_json = "1.0"
+    sha256 = "1.1"
+    sqlx = {version = "0.7", features = [
+        "chrono",
+        "postgres",
+        "runtime-tokio-rustls",
+    ], optional = true}
+    strum = "0.26"
+    strum_macros = "0.26"
+    tera = {version = "1.19", optional = true} # template engine
+    thiserror = "1.0"
+    tokio = {version = "1.28", features = ["macros", "rt", "rt-multi-thread"]}
+    tonic = {version = "0.11", optional = true} # gRPC
+    tracing = "0.1"
+    tracing-opentelemetry = {version = "0.24", optional = true}
+    tracing-subscriber = {version = "0.3", optional = true}
+    tykhe-macros = {path = "../tykhe-macros"}
+    uuid = {version = "1.4", features = ["v4"]}
+
+[build-dependencies]
+    tonic-build = "0.11"
+
+[lib]
+    name = "tykhe"
+    path = "src/lib.rs"
+
+[features]
+    default = [
+        "grpc",
+        "postgres",
+        "rabbitmq",
+        "redis-cache",
+        "rest",
+        "smtp",
+        "tracer",
+    ]
+    grpc = ["prost", "protoc", "tonic"]
+    postgres = ["sqlx"]
+    rabbitmq = ["deadpool-lapin", "lapin"]
+    redis-cache = ["redis", "reool"]
+    rest = ["axum", "redis-cache"]
+    smtp = ["lettre", "tera"]
+    tracer = [
+        "opentelemetry",
+        "opentelemetry-otlp",
+        "opentelemetry-semantic-conventions",
+        "opentelemetry_api",
+        "opentelemetry_sdk",
+        "tonic",
+        "tracing-opentelemetry",
+        "tracing-subscriber",
+    ]
+
+[[bin]]
+    name = "grpc"
+    path = "src/bin/grpc.rs"
+    required-features = [
+        "grpc",
+        "postgres",
+        "rabbitmq",
+        "redis-cache",
+        "smtp",
+        "tracer",
+    ]
+
+[[bin]]
+    name              = "rest"
+    path              = "src/bin/rest.rs"
+    required-features = ["rest", "tracer"]

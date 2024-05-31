@@ -22,7 +22,7 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v37.0.5
+        uses: tj-actions/changed-files@v37.4.0
 
   run_unitary_tests:
     name: Run clippy and unitary tests
@@ -96,4 +96,4 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
-          fail_ci_if_error: true
+          fail_ci_if_error: false

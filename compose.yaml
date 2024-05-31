@@ -1,91 +1,89 @@
 services:
-  postgres:
-    container_name: rauth-postgres
-    image: docker.io/postgres:alpine3.17
-    restart: on-failure
-    volumes:
-      - dbdata:/data/postgres
-      - ./migrations/.postgres:/docker-entrypoint-initdb.d
-    security_opt:
-      label: disable
-    env_file:
-      - .env
+    postgres:
+        container_name: tykhe-postgres
+        image: docker.io/postgres:alpine3.18
+        restart: on-failure
+        volumes:
+            - dbdata:/data/postgres
+            - ./postgres:/docker-entrypoint-initdb.d
+        security_opt:
+            label: disable
+        env_file:
+            - .env
 
-  redis:
-    container_name: rauth-redis
-    image: docker.io/redis:alpine3.17
-    restart: always
-    volumes:
-      - ./redis:/usr/local/etc/redis:ro
-    security_opt:
-      label: disable
-    command: "redis-server /usr/local/etc/redis/redis.conf"
+    redis:
+        container_name: tykhe-redis
+        image: docker.io/redis:alpine3.18
+        restart: always
+        volumes:
+            - ./redis:/usr/local/etc/redis:ro
+        security_opt:
+            label: disable
+        command: "redis-server /usr/local/etc/redis/redis.conf"
 
-  rabbitmq:
-    container_name: rauth-rabbitmq
-    image: docker.io/rabbitmq:3.10.2-alpine
-    hostname: rauth-rabbitmq
-    restart: always
-    security_opt:
-      label: disable
+    rabbitmq:
+        container_name: tykhe-rabbitmq
+        image: docker.io/rabbitmq:3.10.2-alpine
+        hostname: tykhe-rabbitmq
+        restart: always
+        security_opt:
+            label: disable
 
-  grpc:
-    container_name: rauth-grpc
-    image: localhost/alvidir/rauth:latest-grpc
-    restart: always
-    ports:
-      - 8000:8000
-    volumes:
-      - ./templates:/etc/rauth/smtp/templates:ro
-    security_opt:
-      label: disable
-    depends_on:
-      - postgres
-      - redis
-      - rabbitmq
-    env_file:
-      - .env
-    environment:
-      - SERVICE_PORT=8000
+    mailhog:
+        container_name: tykhe-mailhog
+        image: docker.io/mailhog/mailhog:v1.0.1
+        restart: always
+        ports:
+            - 8025:8025
+        security_opt:
+            label: disable
 
-  rest:
-    container_name: rauth-rest
-    image: localhost/alvidir/rauth:latest-rest
-    restart: always
-    ports:
-      - 8001:8001
-    security_opt:
-      label: disable
-    depends_on:
-      - redis
-    env_file:
-      - .env
-    environment:
-      - SERVICE_PORT=8001
+    grpc:
+        container_name: tykhe-grpc
+        image: localhost/alvidir/tykhe:latest-grpc
+        restart: always
+        ports:
+            - 8000:8000
+        volumes:
+            - ./templates:/etc/tykhe/smtp/templates:ro
+        security_opt:
+            label: disable
+        depends_on:
+            - postgres
+            - redis
+            - rabbitmq
+        env_file:
+            - .env
+        environment:
+            - SERVICE_PORT=8000
 
-  envoy:
-    container_name: rauth-envoy
-    image: docker.io/envoyproxy/envoy-alpine:v1.21-latest
-    restart: always
-    ports:
-      - 8080:8080
-      - 9901:9901
-    volumes:
-      - ./envoy:/etc/envoy:ro
-    security_opt:
-      label: disable
-    depends_on:
-      - grpc
-    command: /usr/local/bin/envoy --log-level debug -c /etc/envoy/envoy.yaml
+    # envoy:
+    #   container_name: tykhe-envoy
+    #   image: docker.io/envoyproxy/envoy-alpine:v1.21-latest
+    #   restart: always
+    #   ports:
+    #     - 8080:8080
+    #     - 9901:9901
+    #   volumes:
+    #     - ./envoy:/etc/envoy:ro
+    #   security_opt:
+    #     label: disable
+    #   depends_on:
+    #     - grpc
+    #   command: /usr/local/bin/envoy --log-level debug -c /etc/envoy/envoy.yaml
 
-  mailhog:
-    container_name: mailhog
-    image: docker.io/mailhog/mailhog:v1.0.1
-    restart: always
-    ports:
-      - 8025:8025
-    security_opt:
-      label: disable
+    jaeger:
+        container_name: tykhe-jaeger
+        image: docker.io/jaegertracing/all-in-one:latest
+        restart: always
+        ports:
+            - 16686:16686
+            - 4317:4317
+            - 4318:4318
+        security_opt:
+            label: disable
+        environment:
+            - COLLECTOR_OTLP_ENABLED=true
 
 volumes:
-  dbdata:
+    dbdata:

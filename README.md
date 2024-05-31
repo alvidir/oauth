@@ -1,9 +1,8 @@
-# rauth
+# tykhe
 
-[![Continuos Integration](https://github.com/alvidir/rauth/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/alvidir/rauth/actions/workflows/ci.yaml)
-[![Code Coverage](https://codecov.io/github/alvidir/rauth/coverage.svg?branch=main&token=)](https://codecov.io/gh/alvidir/rauth)
-[![Dependency status](https://deps.rs/repo/github/alvidir/rauth/status.svg)](https://deps.rs/repo/github/alvidir/rauth)
-[![rauth](https://img.shields.io/github/v/release/alvidir/rauth.svg)](https://github.com/alvidir/rauth)
+[![Continuos Integration](https://github.com/alvidir/tykhe/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/alvidir/tykhe/actions/workflows/ci.yaml)
+[![Code Coverage](https://codecov.io/github/alvidir/tykhe/coverage.svg?branch=main&token=)](https://codecov.io/gh/alvidir/tykhe)
+[![tykhe](https://img.shields.io/github/v/release/alvidir/tykhe.svg)](https://github.com/alvidir/tykhe)
 
 A simple SSO implementation in Rust
 
@@ -11,12 +10,12 @@ A simple SSO implementation in Rust
 
 1. [About](#about)
 1. [Endpoints](#example2)
-   1. [Signup](#signup)
-   1. [Reset](#reset)
-   1. [Delete](#delete)
-   1. [Totp](#totp)
-   1. [Login](#login)
-   1. [Logout](#logout)
+    1. [Signup](#signup)
+    1. [Reset](#reset)
+    1. [Delete](#delete)
+    1. [Totp](#totp)
+    1. [Login](#login)
+    1. [Logout](#logout)
 1. [Setup environment](#setup-environment)
 1. [Server configuration](#server-configuration)
 1. [Deployment](#deployment)
@@ -24,7 +23,7 @@ A simple SSO implementation in Rust
 
 ## About
 
-The rauth project provides a **SSO** (Single Sign On) implementation that can be consumed as any of both, a [Rust](https://www.rust-lang.org/) library or a [gRPC](https://grpc.io/) service. Currently, the project includes all regular session-related actions as signup, login, logout, and so on. Plus **TOTP**(Time-based One Time Password) and email verification support.
+The tykhe project provides a **SSO** (Single Sign On) implementation that can be consumed as any of both, a [Rust](https://www.rust-lang.org/) library or a [gRPC](https://grpc.io/) service. Currently, the project includes all regular session-related actions as signup, login, logout, and so on. Plus **TOTP**(Time-based One Time Password) and email verification support.
 
 ## Endpoints
 
@@ -47,9 +46,9 @@ The **signup** transaction requires of **two steps** to get completed: the _sign
 
 #### Response
 
-- If, and only if, the first step of the signup transaction completed successfully, Rauth will respond with the error `E003` (require email verification).
-- If, and only if, the email verification completed successfully, is sent an Empty response with the session token in the corresponding header.
-- Otherwise, is provided one of the errors down below.
+-   If, and only if, the first step of the signup transaction completed successfully, Tykhe will respond with the error `E003` (require email verification).
+-   If, and only if, the email verification completed successfully, is sent an Empty response with the session token in the corresponding header.
+-   Otherwise, is provided one of the errors down below.
 
 #### Error codes
 
@@ -90,9 +89,9 @@ The **reset** transaction requires of **two steps** to get completed: the _email
 
 #### Response
 
-- If, and only if, the first step of the reset transaction completed successfully, Rauth will respond with the error `E003` (require email verification).
-- If, and only if, the password reset completed successfully, is sent an Empty response with no errors.
-- Otherwise, is provided one of the errors down below.
+-   If, and only if, the first step of the reset transaction completed successfully, Tykhe will respond with the error `E003` (require email verification).
+-   If, and only if, the password reset completed successfully, is sent an Empty response with no errors.
+-   Otherwise, is provided one of the errors down below.
 
 #### Error codes
 
@@ -125,8 +124,8 @@ The **delete** transaction requires the user to be logged in, so its session tok
 
 #### Response
 
-- If, and only if, the deletion completed successfully, is sent an Empty response with no errors.
-- Otherwise, is provided one of the errors down below.
+-   If, and only if, the deletion completed successfully, is sent an Empty response with no errors.
+-   Otherwise, is provided one of the errors down below.
 
 #### Error codes
 
@@ -167,10 +166,10 @@ The **totp** transaction requires the user to be logged in, so its session token
 
 #### Response
 
-- If, and only if, the first step of enabling the TOTP completed successfully, is provided the TOTP's secret in the corresponding header.
-- If, and only if, the second step of enabling the TOTP completed successfully, is sent an Empty response with no errors.
-- If, and only if, disabling TOTP completed successfully, is sent an Empty response with no errors.
-- Otherwise, is provided one of the errors down below.
+-   If, and only if, the first step of enabling the TOTP completed successfully, is provided the TOTP's secret in the corresponding header.
+-   If, and only if, the second step of enabling the TOTP completed successfully, is sent an Empty response with no errors.
+-   If, and only if, disabling TOTP completed successfully, is sent an Empty response with no errors.
+-   Otherwise, is provided one of the errors down below.
 
 #### Error codes
 
@@ -202,8 +201,8 @@ Allows an existing user to log in.
 
 #### Response
 
-- If, and only if, the login completed successfully, is sent an Empty response with the session token in the corresponding header.
-- Otherwise, is provided one of the errors down below.
+-   If, and only if, the login completed successfully, is sent an Empty response with the session token in the corresponding header.
+-   Otherwise, is provided one of the errors down below.
 
 #### Error codes
 
@@ -223,8 +222,8 @@ The **logout** transaction requires the user to be logged in, so its session tok
 
 #### Response
 
-- If, and only if, the logout completed successfully, is sent an Empty response with no errors.
-- Otherwise, is provided one of the errors down below.
+-   If, and only if, the logout completed successfully, is sent an Empty response with no errors.
+-   Otherwise, is provided one of the errors down below.
 
 #### Error codes
 
@@ -247,7 +246,7 @@ $ make setup
 
 > This command requires python3 and openssl to be installed
 
-Since is expected to deploy the application using [podman](https://podman.io/), build the rauth image:
+Since is expected to deploy the application using [podman](https://podman.io/), build the tykhe image:
 
 ```bash
 $ make build
@@ -268,8 +267,8 @@ The server expects a set of environment variables to work properly. Although som
 
 | Environment variable    |           Default value           | Description                                                                                                                                          |
 | :---------------------- | :-------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SERVICE_PORT            |               8000                | Port where to expose the service service                                                                                                                |
-| SERVICE_ADDR            |             127.0.0.1             | Address where to expose the service service                                                                                                             |
+| SERVICE_PORT            |               8000                | Port where to expose the service service                                                                                                             |
+| SERVICE_ADDR            |             127.0.0.1             | Address where to expose the service service                                                                                                          |
 | POSTGRES_DSN            |                                   | `Postgres` data source name                                                                                                                          |
 | POSTGRES_POOL           |                10                 | `Postgres` connection pool size                                                                                                                      |
 | REDIS_URL               |                                   | `Redis` URL                                                                                                                                          |
@@ -279,22 +278,23 @@ The server expects a set of environment variables to work properly. Although som
 | JWT_PUBLIC              |                                   | The JWT public key to verify with all comming tokens (tip: it could be the content of the .ssh/pkcs8_pubkey.base64 file generated on the setup step) |
 | JWT_HEADER              |           authorization           | Header where to find/store all JWT                                                                                                                   |
 | TOTP_HEADER             |           x-totp-secret           | Header where to set the TOTP secret                                                                                                                  |
-| SMTP_ISSUER             |               rauth               | Name to identify where the emails are sent from                                                                                                      |
+| SMTP_ISSUER             |               tykhe               | Name to identify where the emails are sent from                                                                                                      |
 | SMTP_ORIGIN             |                                   | Email to set as the `from` for all sent emails                                                                                                       |
 | SMTP_TRANSPORT          |                                   | Smtp transporter URL (ex.: smtp.gmail.com)                                                                                                           |
-| SMTP_TEMPLATES          | /etc/rauth/smtp/templates/\*.html | Path where to find all email's templates                                                                                                             |
+| SMTP_TEMPLATES          | /etc/tykhe/smtp/templates/\*.html | Path where to find all email templates                                                                                                               |
 | SMTP_USERNAME           |                                   | If required, a username to enable the application to send emails                                                                                     |
 | SMTP_PASSWORD           |                                   | If required, an application password to enable the application to send emails                                                                        |
-| PWD_SUFIX               |           ::PWD::RAUTH            | A suffix to append to all passwords before hashing and storing them                                                                                  |
+| PWD_SUFIX               |           ::PWD::TYKHE            | A suffix to append to all passwords before hashing and storing them                                                                                  |
 | RABBITMQ_USERS_EXCHANGE |                                   | The RabbitMQ exchange to emit user related events                                                                                                    |
 | RABBITMQ_URL            |                                   | `RabbitMQ` URL                                                                                                                                       |
 | RABBITMQ_POOL           |                10                 | `RabbitMQ` connection pool size                                                                                                                      |
 | EVENT_ISSUER            |                                   | Issuer name for all emited events                                                                                                                    |
-| TOTP_SECRET_LEN         |                                   | Length of the random generated secret to be used for the TOTP                                                                                        |
-| TOTP_SECRET_NAME        |                                   | Name by which every TOTP secret will be stored in the database                                                                                       |
+| TOTP_SECRET_LEN         |                32                 | Bytes of the random generated secret to be used for the Time-based One Time Password                                                                 |
 | TOKEN_ISSUER            |                                   | Issuer value for the `iss` field of any generated token                                                                                              |
+| SERVICE_NAME            |               tykhe               | Service identification to be emited with every trace                                                                                                 |
+| COLLECTOR_URL           |                                   | Url of the collector where to send all the traces using the [Opentelemetry Protocol](https://opentelemetry.io/docs/specs/otel/protocol/)             |
 
-> All these environment variables can be set in a .env file, since Rauth uses dotenv to set up the environment
+> All these environment variables can be set in a .env file, since Tykhe uses dotenv to set up the environment
 
 ## Deployment
 
@@ -306,12 +306,12 @@ $ make deploy
 
 This command will deploy a pod with all those services described in the [compose file](./compose.yaml) of this project. Once completed, the application endpoints will be reachable in two different ways:
 
-- via `grpc` messaging on port `8000`
-- via `grpc-web` requests on port `8080`
+-   via `grpc` messaging on port `8000`
+-   via `grpc-web` requests on port `8080`
 
 ## Debugging
 
-By default, the deployment command has the `-d` flag enabled, so no logs are displayed. If you really want to see them, you have two options: removing the `-d` flag from the `deploy` command of the [Makefile](./Makefile), which will display all logs of all services, or running the following command to display only those coming from the `rauth-server`:
+By default, the deployment command has the `-d` flag enabled, so no logs are displayed. If you really want to see them, you have two options: removing the `-d` flag from the `deploy` command of the [Makefile](./Makefile), which will display all logs of all services, or running the following command to display only those coming from the `tykhe-server`:
 
 ```bash
 $ make follow

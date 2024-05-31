@@ -24,7 +24,6 @@ def main() -> int:
     
     for root, _, files in os.walk(WORKDIR):
         files = filter(lambda filename: regex.match(filename), files)
-
         files = map(lambda filename: os.path.join(root, filename), files)
         scripts += list(files)
 

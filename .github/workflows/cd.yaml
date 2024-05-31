@@ -1,90 +1,90 @@
 name: Continuous delivery
 
 on:
-  release:
-    types: published
+    release:
+        types: published
 
-  workflow_dispatch:
+    workflow_dispatch:
 
 env:
-  IMAGE_REGISTRY: docker.io
-  IMAGE_NAME: alvidir/rauth
+    IMAGE_REGISTRY: docker.io
+    IMAGE_NAME: alvidir/tykhe
 
 jobs:
-  push_grpc_server_to_registry:
-    name: Push gRPC server image
-    runs-on: ubuntu-latest
+    push_grpc_server_to_registry:
+        name: Push gRPC server image
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
 
-      - name: Set configuration
-        run: |
-          target="[machine]"
-          want="#[machine]"
-          cat /usr/share/containers/containers.conf | sed "s/$target/$want/" > /usr/share/containers/containers.conf
+            - name: Set configuration
+              run: |
+                  target="[machine]"
+                  want="#[machine]"
+                  cat /usr/share/containers/containers.conf | sed "s/$target/$want/" > /usr/share/containers/containers.conf
 
-      - name: Build image
-        id: build-image
-        uses: redhat-actions/buildah-build@v2.12
-        with:
-          image: ${{ env.IMAGE_NAME }}
-          tags: ${{ github.event.release.tag_name }}-grpc
-          containerfiles: |
-            ./container/grpc/containerfile
+            - name: Build image
+              id: build-image
+              uses: redhat-actions/buildah-build@v2.12
+              with:
+                  image: ${{ env.IMAGE_NAME }}
+                  tags: ${{ github.event.release.tag_name }}-grpc
+                  containerfiles: |
+                      ./container/grpc/containerfile
 
-      - name: Log in to registry
-        uses: redhat-actions/podman-login@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ env.IMAGE_REGISTRY }}
+            - name: Log in to registry
+              uses: redhat-actions/podman-login@v1
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+                  registry: ${{ env.IMAGE_REGISTRY }}
 
-      - name: Push image
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ steps.build-image.outputs.image }}
-          tags: ${{ steps.build-image.outputs.tags }}
-          registry: ${{ env.IMAGE_REGISTRY }}
+            - name: Push image
+              uses: redhat-actions/push-to-registry@v2
+              with:
+                  image: ${{ steps.build-image.outputs.image }}
+                  tags: ${{ steps.build-image.outputs.tags }}
+                  registry: ${{ env.IMAGE_REGISTRY }}
 
-  push_rest_server_to_registry:
-    name: Push REST server image
-    runs-on: ubuntu-latest
+    push_rest_server_to_registry:
+        name: Push REST server image
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
 
-      - name: Set configuration
-        run: |
-          target="[machine]"
-          want="#[machine]"
-          cat /usr/share/containers/containers.conf | sed "s/$target/$want/" > /usr/share/containers/containers.conf
+            - name: Set configuration
+              run: |
+                  target="[machine]"
+                  want="#[machine]"
+                  cat /usr/share/containers/containers.conf | sed "s/$target/$want/" > /usr/share/containers/containers.conf
 
-      - name: Build image
-        id: build-image
-        uses: redhat-actions/buildah-build@v2.12
-        with:
-          image: ${{ env.IMAGE_NAME }}
-          tags: ${{ github.event.release.tag_name }}-rest
-          containerfiles: |
-            ./container/rest/containerfile
+            - name: Build image
+              id: build-image
+              uses: redhat-actions/buildah-build@v2.12
+              with:
+                  image: ${{ env.IMAGE_NAME }}
+                  tags: ${{ github.event.release.tag_name }}-rest
+                  containerfiles: |
+                      ./container/rest/containerfile
 
-      - name: Log in to registry
-        uses: redhat-actions/podman-login@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ env.IMAGE_REGISTRY }}
+            - name: Log in to registry
+              uses: redhat-actions/podman-login@v1
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
+                  registry: ${{ env.IMAGE_REGISTRY }}
 
-      - name: Push image
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ steps.build-image.outputs.image }}
-          tags: ${{ steps.build-image.outputs.tags }}
-          registry: ${{ env.IMAGE_REGISTRY }}
+            - name: Push image
+              uses: redhat-actions/push-to-registry@v2
+              with:
+                  image: ${{ steps.build-image.outputs.image }}
+                  tags: ${{ steps.build-image.outputs.tags }}
+                  registry: ${{ env.IMAGE_REGISTRY }}

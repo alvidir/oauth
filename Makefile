@@ -1,15 +1,18 @@
-BINARY_NAME=rauth
+BINARY_NAME=tykhe
 VERSION?=latest
 PKG_MANAGER?=dnf
+
+features_grpc="grpc postgres redis-cache rabbitmq smtp tracer"
+features_rest="rest tracer"
 
 all: binaries
 
 binaries: install-deps
 ifdef target
-	cargo build --bin $(target) --no-default-features --features $(target) --release
+	cargo build --bin $(target) --no-default-features --features=$(features_$(target)) --release
 else
-	-cargo build --bin grpc --no-default-features --features grpc --release
-	-cargo build --bin rest --no-default-features --features rest --release
+	-cargo build --bin grpc --no-default-features --features=$(features_grpc) --release
+	-cargo build --bin rest --no-default-features --features=$(features_rest) --release
 endif
 
 images:

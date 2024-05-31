@@ -3,9 +3,9 @@ syntax = "proto3";
 package session;
 
 message LoginRequest {
-  string ident = 1;
-  string pwd = 2;
-  string totp = 3;
+  string identifier = 1;
+  string password = 2;
+  string otp = 3;
 }
 
 message Empty {}
