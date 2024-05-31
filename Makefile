@@ -1,4 +1,4 @@
-BINARY_NAME=rauth
+BINARY_NAME=tykhe
 VERSION?=latest
 PKG_MANAGER?=dnf
 

@@ -168,7 +168,7 @@ where
             .map_err(Status::from)?;
 
         let method = MultiFactorMethod::from_str(&request.method)?;
-        match Actions::from_i32(request.action).ok_or(Status::invalid_argument("action"))? {
+        match Actions::try_from(request.action).map_err(|_| Status::invalid_argument("action"))? {
             Actions::Enable => {
                 self.user_app
                     .enable_multi_factor_with_token(token, method, password, otp)

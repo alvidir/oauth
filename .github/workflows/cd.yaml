@@ -8,7 +8,7 @@ on:
 
 env:
     IMAGE_REGISTRY: docker.io
-    IMAGE_NAME: alvidir/rauth
+    IMAGE_NAME: alvidir/tykhe
 
 jobs:
     push_grpc_server_to_registry:

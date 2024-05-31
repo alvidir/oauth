@@ -1,14 +1,19 @@
 #[macro_use]
 extern crate tracing;
 
-use axum::headers::Header;
 use axum::http::{HeaderName, HeaderValue};
 use axum::Router;
+use axum_extra::headers::Header;
 use jsonwebtoken::{DecodingKey, EncodingKey};
 use once_cell::sync::Lazy;
-use rauth::cache::RedisCache;
-use rauth::token::domain::Token;
-use rauth::{
+use std::error::Error;
+use std::marker::PhantomData;
+use std::str::FromStr;
+use std::sync::Arc;
+use std::time::Duration;
+use tykhe::cache::RedisCache;
+use tykhe::token::domain::Token;
+use tykhe::{
     config, redis,
     token::{
         rest::{TokenHeader, TokenRestService},
@@ -16,11 +21,6 @@ use rauth::{
     },
     tracer,
 };
-use std::error::Error;
-use std::marker::PhantomData;
-use std::str::FromStr;
-use std::sync::Arc;
-use std::time::Duration;
 
 static TOKEN_HEADER_NAME: Lazy<HeaderName> =
     Lazy::new(|| HeaderName::from_str(&config::JWT_HEADER).unwrap());
@@ -32,30 +32,30 @@ impl Header for JwtTokenHeader {
         &TOKEN_HEADER_NAME
     }
 
-    fn decode<'i, I>(values: &mut I) -> Result<Self, axum::headers::Error>
+    fn decode<'i, I>(values: &mut I) -> Result<Self, axum_extra::headers::Error>
     where
         Self: Sized,
         I: Iterator<Item = &'i axum::http::HeaderValue>,
     {
         let Some(header_value) = values.into_iter().next() else {
-            return Err(axum::headers::Error::invalid());
+            return Err(axum_extra::headers::Error::invalid());
         };
 
         if values.into_iter().next().is_some() {
-            return Err(axum::headers::Error::invalid());
+            return Err(axum_extra::headers::Error::invalid());
         };
 
         let header_value = match header_value.to_owned().to_str() {
             Ok(header_value) => header_value.to_string(),
             Err(error) => {
                 error!(error = error.to_string(), "parsing header value into str");
-                return Err(axum::headers::Error::invalid());
+                return Err(axum_extra::headers::Error::invalid());
             }
         };
 
         Token::try_from(header_value)
             .map(JwtTokenHeader)
-            .map_err(|_| axum::headers::Error::invalid())
+            .map_err(|_| axum_extra::headers::Error::invalid())
     }
 
     fn encode<E: Extend<axum::http::HeaderValue>>(&self, values: &mut E) {
@@ -105,8 +105,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         "server ready to accept connections"
     );
 
-    axum::Server::bind(&(&*config::SERVICE_ADDR).parse().unwrap())
-        .serve(app.into_make_service())
+    let listener = tokio::net::TcpListener::bind(&*config::SERVICE_ADDR)
+        .await
+        .unwrap();
+
+    axum::serve(listener, app.into_make_service())
         .await
         .unwrap();
 

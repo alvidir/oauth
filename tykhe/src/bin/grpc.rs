@@ -2,7 +2,12 @@
 extern crate tracing;
 
 use jsonwebtoken::{DecodingKey, EncodingKey};
-use rauth::{
+use std::sync::Arc;
+use std::time::Duration;
+use std::{error::Error, net::SocketAddr};
+use tera::Tera;
+use tonic::transport::Server;
+use tykhe::{
     cache::RedisCache,
     config,
     multi_factor::{
@@ -28,11 +33,6 @@ use rauth::{
         smtp::UserSmtp,
     },
 };
-use std::sync::Arc;
-use std::time::Duration;
-use std::{error::Error, net::SocketAddr};
-use tera::Tera;
-use tonic::transport::Server;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

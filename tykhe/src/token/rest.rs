@@ -1,11 +1,11 @@
 use crate::token::{domain::Token, service::TokenService};
 use axum::{
     extract::State,
-    headers::Header,
     http::StatusCode,
     routing::{delete, get},
-    Router, TypedHeader,
+    Router,
 };
+use axum_extra::{headers::Header, TypedHeader};
 use std::{marker::PhantomData, sync::Arc};
 
 pub trait TokenHeader: Header {

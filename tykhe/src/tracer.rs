@@ -1,6 +1,6 @@
 use once_cell::sync::Lazy;
+use opentelemetry::KeyValue;
 use opentelemetry_api::global;
-use opentelemetry_api::KeyValue;
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::{runtime, trace as sdktrace, Resource};
 use opentelemetry_semantic_conventions::resource;
@@ -15,7 +15,7 @@ use tracing_subscriber::Registry;
 
 const KEY_VALUE_SEPARATOR: &str = "=";
 
-const DEFAULT_SERVICE_NAME: &str = "rauth";
+const DEFAULT_SERVICE_NAME: &str = "tykhe";
 const DEFAULT_HEADERS_SEPARATOR: &str = ";";
 
 const ENV_SERVICE_NAME: &str = "SERVICE_NAME";
