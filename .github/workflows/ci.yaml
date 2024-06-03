@@ -22,7 +22,7 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v37.0.5
+        uses: tj-actions/changed-files@v44.5.2
 
   run_unitary_tests:
     name: Run clippy and unitary tests
